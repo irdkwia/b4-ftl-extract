@@ -7,8 +7,14 @@ parser.add_argument("output")
 parser.add_argument(
     "-s",
     "--mix-spare",
-    help="Mix spare using filepath '[input (without extension)].oob'.",
+    help="Mix spare. If this argument is not specified, it is assumed that the input file has data and spare areas interleaved.",
     action=argparse.BooleanOptionalAction,
+)
+parser.add_argument(
+    "-ob",
+    "--input-oob",
+    default=None,
+    help="If not specified, a file with the same name as the input NAND file and the extension '.oob' in the same folder will be automatically used."
 )
 
 args = parser.parse_args()
@@ -33,7 +39,7 @@ with open(args.input, "rb") as file:
     data = file.read()
 
 if args.mix_spare:
-    oob = os.path.join(
+    oob = args.input_oob or os.path.join(
         os.path.dirname(args.input),
         f"{os.path.splitext(os.path.basename(args.input))[0]}.oob",
     )
